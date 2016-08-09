@@ -1,6 +1,10 @@
 # react-native-aliyun-oss
 react-native aliyun oss
 
+# usage
+```
+npm install git+https://github.com/lotosbin/react-native-aliyun-oss.git --save
+```
 
 
 # other

@@ -15,6 +15,5 @@
   "lichense": "MIT",
   "homepage": "https://github.com/lotosbin/react-native-aliyun-oss#readme",
   "dependencies": {
-    "react-native": "^0.31.0"
   }
 }
