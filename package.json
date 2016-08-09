@@ -1,0 +1,13 @@
+{
+  "name": "react-native-aliyun-oss",
+  "version": "0.0.1",
+  "keywords": ["react-native","aliyun","oss"],
+  "main":"index.js",
+   "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lotosbin/react-native-aliyun-oss.git"
+  },
+  "author":"lotosbin",
+  "lichense": "MIT",
+  "homepage": "https://github.com/lotosbin/react-native-aliyun-oss#readme"
+}
