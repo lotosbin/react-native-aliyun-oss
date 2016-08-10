@@ -14,6 +14,7 @@ import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvide
 import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -52,7 +53,7 @@ public class AliyunOSSModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void upload(String bucketName, String objectKey, String uploadFilePath) {
+    public void upload(String bucketName, String objectKey, String uploadFilePath, Promise promise) {
         // 构造上传请求
         PutObjectRequest put = new PutObjectRequest(bucketName, objectKey, uploadFilePath);
 
@@ -71,6 +72,7 @@ public class AliyunOSSModule extends ReactContextBaseJavaModule {
 
                 Log.d("ETag", result.getETag());
                 Log.d("RequestId", result.getRequestId());
+                promise.resolve(result)
             }
 
             @Override
@@ -79,6 +81,8 @@ public class AliyunOSSModule extends ReactContextBaseJavaModule {
                 if (clientExcepion != null) {
                     // 本地异常如网络异常等
                     clientExcepion.printStackTrace();
+                    promise.reject(clientExcepion)
+                    return;
                 }
                 if (serviceException != null) {
                     // 服务异常
@@ -86,7 +90,10 @@ public class AliyunOSSModule extends ReactContextBaseJavaModule {
                     Log.e("RequestId", serviceException.getRequestId());
                     Log.e("HostId", serviceException.getHostId());
                     Log.e("RawMessage", serviceException.getRawMessage());
+                    promise.reject(serviceException)
+                    return;
                 }
+                promise.reject(new UnknownError());
             }
         });
 
