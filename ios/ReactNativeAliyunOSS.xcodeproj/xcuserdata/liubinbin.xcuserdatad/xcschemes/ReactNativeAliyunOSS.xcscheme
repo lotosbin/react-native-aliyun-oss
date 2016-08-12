@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "58B511DA1A9E6C8500147676"
                BuildableName = "libReactNativeAliyunOSS.a"
-               BlueprintName = "ReactNativeAliyunOSS"
-               ReferencedContainer = "container:ReactNativeAliyunOSS.xcodeproj">
+               BlueprintName = "AliyunOSSModule"
+               ReferencedContainer = "container:AliyunOSSModule.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,8 +47,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "58B511DA1A9E6C8500147676"
             BuildableName = "libReactNativeAliyunOSS.a"
-            BlueprintName = "ReactNativeAliyunOSS"
-            ReferencedContainer = "container:ReactNativeAliyunOSS.xcodeproj">
+            BlueprintName = "AliyunOSSModule"
+            ReferencedContainer = "container:AliyunOSSModule.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,8 +65,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "58B511DA1A9E6C8500147676"
             BuildableName = "libReactNativeAliyunOSS.a"
-            BlueprintName = "ReactNativeAliyunOSS"
-            ReferencedContainer = "container:ReactNativeAliyunOSS.xcodeproj">
+            BlueprintName = "AliyunOSSModule"
+            ReferencedContainer = "container:AliyunOSSModule.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

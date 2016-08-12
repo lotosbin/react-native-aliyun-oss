@@ -1,4 +1,5 @@
 package org.lotos.reactnative.aliyun.oss;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -22,9 +23,10 @@ import com.facebook.react.bridge.ReactMethod;
 /**
  * Created by liubinbin on 8/9/2016.
  */
-public class AliyunOSSModule extends ReactContextBaseJavaModule {
+public class AliyunOSSModule extends ReactContextBaseJavaModule implements  OSSCompletedCallback<PutObjectRequest, PutObjectResult>,OSSProgressCallback<PutObjectRequest> {
     protected ReactApplicationContext context;
     private OSS oss;
+    private Promise uploadPromise;
 
     /**
      * @param reactContext
@@ -53,51 +55,50 @@ public class AliyunOSSModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void upload(String bucketName, String objectKey, String uploadFilePath, Promise promise) {
+    public void upload(String bucketName, String objectKey, String uploadFilePath, final Promise promise) {
+        uploadPromise = promise;
         // 构造上传请求
         PutObjectRequest put = new PutObjectRequest(bucketName, objectKey, uploadFilePath);
 
         // 异步上传时可以设置进度回调
-        put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
-            @Override
-            public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
-                Log.d("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
-            }
-        });
+        put.setProgressCallback(this);
 
-        OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-            @Override
-            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                Log.d("PutObject", "UploadSuccess");
+        OSSAsyncTask task = oss.asyncPutObject(put, this);
 
-                Log.d("ETag", result.getETag());
-                Log.d("RequestId", result.getRequestId());
-                promise.resolve(result)
-            }
+//        task.cancel(); // 可以取消任务
+//        task.waitUntilFinished(); // 可以等待任务完成
+    }
+    @Override
+    public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
+        Log.d("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
+    }
+    @Override
+    public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+        Log.d("PutObject", "UploadSuccess");
 
-            @Override
-            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
-                // 请求异常
-                if (clientExcepion != null) {
-                    // 本地异常如网络异常等
-                    clientExcepion.printStackTrace();
-                    promise.reject(clientExcepion)
-                    return;
-                }
-                if (serviceException != null) {
-                    // 服务异常
-                    Log.e("ErrorCode", serviceException.getErrorCode());
-                    Log.e("RequestId", serviceException.getRequestId());
-                    Log.e("HostId", serviceException.getHostId());
-                    Log.e("RawMessage", serviceException.getRawMessage());
-                    promise.reject(serviceException)
-                    return;
-                }
-                promise.reject(new UnknownError());
-            }
-        });
+        Log.d("ETag", result.getETag());
+        Log.d("RequestId", result.getRequestId());
+        uploadPromise.resolve(result.getServerCallbackReturnBody());
+    }
 
-// task.cancel(); // 可以取消任务
-// task.waitUntilFinished(); // 可以等待任务完成
+    @Override
+    public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+        // 请求异常
+        if (clientExcepion != null) {
+            // 本地异常如网络异常等
+            clientExcepion.printStackTrace();
+            uploadPromise.reject(clientExcepion);
+            return;
+        }
+        if (serviceException != null) {
+            // 服务异常
+            Log.e("ErrorCode", serviceException.getErrorCode());
+            Log.e("RequestId", serviceException.getRequestId());
+            Log.e("HostId", serviceException.getHostId());
+            Log.e("RawMessage", serviceException.getRawMessage());
+            uploadPromise.reject(serviceException);
+            return;
+        }
+        uploadPromise.reject(new UnknownError());
     }
 }
