@@ -1,6 +1,5 @@
 package org.lotos.reactnative.aliyun.oss;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientConfiguration;
@@ -20,10 +19,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import java.net.URI;
+
 /**
  * Created by liubinbin on 8/9/2016.
  */
-public class AliyunOSSModule extends ReactContextBaseJavaModule implements  OSSCompletedCallback<PutObjectRequest, PutObjectResult>,OSSProgressCallback<PutObjectRequest> {
+public class AliyunOSSModule extends ReactContextBaseJavaModule implements OSSCompletedCallback<PutObjectRequest, PutObjectResult>, OSSProgressCallback<PutObjectRequest> {
     protected ReactApplicationContext context;
     private OSS oss;
     private Promise uploadPromise;
@@ -57,21 +58,28 @@ public class AliyunOSSModule extends ReactContextBaseJavaModule implements  OSSC
     @ReactMethod
     public void upload(String bucketName, String objectKey, String uploadFilePath, final Promise promise) {
         uploadPromise = promise;
-        // 构造上传请求
-        PutObjectRequest put = new PutObjectRequest(bucketName, objectKey, uploadFilePath);
 
-        // 异步上传时可以设置进度回调
-        put.setProgressCallback(this);
+        try {
+            // 构造上传请求
+            String filePath = new URI(uploadFilePath).getPath();
+            PutObjectRequest put = new PutObjectRequest(bucketName, objectKey, filePath);
+            // 异步上传时可以设置进度回调
+            put.setProgressCallback(this);
 
-        OSSAsyncTask task = oss.asyncPutObject(put, this);
+            OSSAsyncTask task = oss.asyncPutObject(put, this);
 
 //        task.cancel(); // 可以取消任务
 //        task.waitUntilFinished(); // 可以等待任务完成
+        } catch (Exception e) {
+            uploadPromise.reject(e);
+        }
     }
+
     @Override
     public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
         Log.d("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
     }
+
     @Override
     public void onSuccess(PutObjectRequest request, PutObjectResult result) {
         Log.d("PutObject", "UploadSuccess");
