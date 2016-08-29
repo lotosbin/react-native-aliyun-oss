@@ -5,7 +5,9 @@ react-native aliyun oss
 ```
 npm install git+https://github.com/lotosbin/react-native-aliyun-oss.git --save
 ```
-
+```Podfile
+  pod 'AliyunOSSiOS'
+```
 
 # other
 - https://github.com/xieshuigeng/react-native-aliyun-oss
