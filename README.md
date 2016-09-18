@@ -1,4 +1,6 @@
 # react-native-aliyun-oss
+
+[![Join the chat at https://gitter.im/lotosbin/react-native-aliyun-oss](https://badges.gitter.im/lotosbin/react-native-aliyun-oss.svg)](https://gitter.im/lotosbin/react-native-aliyun-oss?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 react-native aliyun oss
 
 # usage
